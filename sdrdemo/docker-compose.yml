@@ -1,0 +1,18 @@
+
+services:
+  postgres-db:
+    image: postgres:15
+    container_name: shipment_postgres
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=shipment_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+
+volumes:
+  postgres_data:
