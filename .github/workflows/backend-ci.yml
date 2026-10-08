@@ -28,14 +28,14 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distruption: 'temurin'
+          distribution: 'temurin'
           cache: 'gradle'
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Run tests
-        run: ./gradlew tests
+        run: ./gradlew test
 
       - name: Upload test reports
         if: always()
@@ -43,4 +43,4 @@ jobs:
         with:
           name: backend-test-reports
           path: backend/build/reports/tests/test/
-          retention-days: 7 
+          retention-days: 7
