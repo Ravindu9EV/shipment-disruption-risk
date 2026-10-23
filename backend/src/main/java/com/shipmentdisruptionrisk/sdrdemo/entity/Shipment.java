@@ -1,25 +1,27 @@
 package com.shipmentdisruptionrisk.sdrdemo.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 
+
+@Entity
+@Table(name = "shipments")
 @Getter
 @Setter
-@Entity
 @NoArgsConstructor
 public class Shipment {
     @Id
-    @Column(unique = true,nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true, nullable = false)
+    private String shipmentId;
     @Column(nullable = false)
-    private Date shipmentDate;
+    private LocalDate shipmentDate;
     @Column(nullable = false)
     private String originPort;
     @Column(nullable = false)
@@ -42,4 +44,22 @@ public class Shipment {
     private Boolean disruptionOccurred;
 
 
+    @Builder
+    public Shipment(String shipmentId, LocalDate shipmentDate, String originPort,
+                    String destination, String transportMode, String productCategory,
+                    double distance, double weight, double fuelPrice,
+                    double carrierReliability, double leadTime, Boolean disruptionOccurred) {
+        this.shipmentId = shipmentId;
+        this.shipmentDate = shipmentDate;
+        this.originPort = originPort;
+        this.destination = destination;
+        this.transportMode = transportMode;
+        this.productCategory = productCategory;
+        this.distance = distance;
+        this.weight = weight;
+        this.fuelPrice = fuelPrice;
+        this.carrierReliability = carrierReliability;
+        this.leadTime = leadTime;
+        this.disruptionOccurred = disruptionOccurred;
+    }
 }
