@@ -7,6 +7,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
@@ -47,39 +49,44 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 3. Extract the token
         String token = authHeader.substring(7);
 
-        // 4. Validate
-        if (!jwtService.isTokenValid(token)) {
-            filterChain.doFilter(request, response);
-            return;
+        try{
+            // 4. Validate
+            if (!jwtService.isTokenValid(token)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            // 5. Extract username
+            String username = jwtService.extractUsername(token);
+
+
+            Optional<User> userOpt = userRepository.findByUsername(username);
+            if (userOpt.isEmpty()) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            User user = userOpt.get();
+
+            // 7. Check status
+            if (user.getStatus() != Status.ACTIVE) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            // 8. Build authentication if not already set
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                List<GrantedAuthority> authorities = List.of(
+                    new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
+                );
+                UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(username, null, authorities);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        }catch (Exception e){
+            log.error("JWT Authentication failed with exception: {}",e.getMessage());
         }
 
-        // 5. Extract username
-        String username = jwtService.extractUsername(token);
-
-
-        Optional<User> userOpt = userRepository.findByUsername(username);
-        if (userOpt.isEmpty()) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        User user = userOpt.get();
-
-        // 7. Check status
-        if (user.getStatus() != Status.ACTIVE) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        // 8. Build authentication if not already set
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            List<GrantedAuthority> authorities = List.of(
-                new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
-            );
-            UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(username, null, authorities);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
 
         // 9. Continue
         filterChain.doFilter(request, response);

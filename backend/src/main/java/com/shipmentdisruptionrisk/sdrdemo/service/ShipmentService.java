@@ -1,19 +1,22 @@
 package com.shipmentdisruptionrisk.sdrdemo.service;
 
-import com.shipmentdisruptionrisk.sdrdemo.dto.ShipmentDTO;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import com.shipmentdisruptionrisk.sdrdemo.dto.ShipmentResponseDTO;
+import com.shipmentdisruptionrisk.sdrdemo.entity.Shipment;
 
 
+import java.util.List;
+import java.util.Optional;
 
-@Service
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-public class ShipmentService {
-    private static final Logger log = LoggerFactory.getLogger(ShipmentService.class);
+public interface ShipmentService {
 
-    public void add(ShipmentDTO data){
-        log.info("Service: add Shipment-->"+data);
-    }
+
+
+    Page<ShipmentResponseDTO> getAllShipments(Pageable pageable);
+
+    List<Shipment> getAllShipments();
+    Optional<Shipment> getShipmentById(Long Id);
+    Optional<Shipment> getShipmentByShipmentId(String shipmentId);
 }

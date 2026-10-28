@@ -36,9 +36,13 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/login").permitAll()
                 .requestMatchers("/actuator/health").permitAll()
+//                .requestMatchers("/api/shipments/**").permitAll()
+//                .requestMatchers("/api/risk/**").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
+            .exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) ->
+                response.sendError(401,"Unauthorized: "+authException.getMessage())))
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

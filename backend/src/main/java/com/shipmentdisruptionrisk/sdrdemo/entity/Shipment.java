@@ -43,6 +43,8 @@ public class Shipment {
     @Column(nullable = false)
     private Boolean disruptionOccurred;
 
+    @OneToOne(mappedBy = "shipment",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private RiskAssessment riskAssessment;
 
     @Builder
     public Shipment(String shipmentId, LocalDate shipmentDate, String originPort,
