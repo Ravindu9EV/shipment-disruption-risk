@@ -4,6 +4,7 @@ import axiosClient from "../api/axiosClient";
 export default function Login({ onLogin}){
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error,setError]= useState('');
 
   const handleLogin = async (e)=> {
     e.preventDefault();
