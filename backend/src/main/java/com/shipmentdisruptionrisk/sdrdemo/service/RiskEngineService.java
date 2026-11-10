@@ -4,5 +4,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface RiskEngineService {
     void assessAllShipments();
-    ResponseEntity<?> breakdwon(Long id);
+    ResponseEntity<?> breakdown(Long id);
 }

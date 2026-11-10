@@ -1,5 +1,6 @@
 package com.shipmentdisruptionrisk.sdrdemo.repository;
 
+import com.shipmentdisruptionrisk.sdrdemo.Utility.RiskLevel;
 import com.shipmentdisruptionrisk.sdrdemo.entity.Shipment;
 
 import org.springframework.data.domain.Page;
@@ -18,4 +19,6 @@ public interface ShipmentRepository extends JpaRepository<Shipment,Long> {
     Optional<Shipment> findShipmentByShipmentId(String shipmentId);
     @EntityGraph(attributePaths = "riskAssessment")
     Page<Shipment> findAll(Pageable pageable);
+    @EntityGraph(attributePaths = "riskAssessment")
+    Page<Shipment> findByRiskAssessment_RiskLevel(RiskLevel riskLevel,Pageable pageable);
 }

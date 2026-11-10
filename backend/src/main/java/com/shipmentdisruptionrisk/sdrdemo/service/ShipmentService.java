@@ -14,7 +14,7 @@ public interface ShipmentService {
 
 
 
-    Page<ShipmentResponseDTO> getAllShipments(Pageable pageable);
+    Page<ShipmentResponseDTO> getAllShipments(Pageable pageable,String riskLevel);
     Optional<Shipment> getShipmentById(Long Id);
     Optional<Shipment> getShipmentByShipmentId(String shipmentId);
     ShipmentResponseDTO toDto(Shipment shipment);

@@ -1,5 +1,6 @@
 package com.shipmentdisruptionrisk.sdrdemo.service.impl;
 
+import com.shipmentdisruptionrisk.sdrdemo.Utility.RiskLevel;
 import com.shipmentdisruptionrisk.sdrdemo.dto.ShipmentResponseDTO;
 import com.shipmentdisruptionrisk.sdrdemo.entity.RiskAssessment;
 import com.shipmentdisruptionrisk.sdrdemo.entity.Shipment;
@@ -28,22 +29,21 @@ public class ShipmentServiceImpl implements ShipmentService {
 
 
     @Override
-    public Page<ShipmentResponseDTO> getAllShipments(Pageable pageable) {
+    public Page<ShipmentResponseDTO> getAllShipments(Pageable pageable,String riskLevel) {
         Page<Shipment> shipments=shipmentRepository.findAll(pageable);
-        return shipments.map(shipment -> {
-            RiskAssessment risk = shipment.getRiskAssessment();
-            return ShipmentResponseDTO.builder()
-                .id(shipment.getId())
-                .shipmentId(shipment.getShipmentId())
-                .originPort(shipment.getOriginPort())
-                .destination(shipment.getDestination())
-                .distance(shipment.getDistance())
-                .riskLevel(risk != null ? risk.getRiskLevel().name() : "PENDING")
-                .riskScore(risk!= null ? risk.getRiskScore() : 0.0)
-                .geopoliticalRisk(shipment.getGeopoliticalRisk())
-                .weatherCondition(shipment.getWeatherCondition())
-                .build();
-        });
+        if(riskLevel == null || riskLevel.isBlank()){
+            shipments=shipmentRepository.findAll(pageable);
+        }else{
+            try{
+                RiskLevel level = RiskLevel.valueOf(riskLevel.toUpperCase());
+                shipments= shipmentRepository.findByRiskAssessment_RiskLevel(level,pageable);
+            }catch (IllegalArgumentException e){
+                log.warn("Unknown riskLevel '{}', failling back to unfiltered", riskLevel);
+                shipments = shipmentRepository.findAll(pageable);
+            }
+        }
+
+        return shipments.map(this::toDto);
     }
 
 

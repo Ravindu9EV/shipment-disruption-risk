@@ -29,16 +29,18 @@ public class SecurityConfig {
 
     @Bean
     @SuppressWarnings({"java:S112", "java:S1130"})
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/login").permitAll()
                 .requestMatchers("/actuator/health").permitAll()
-//                .requestMatchers("/api/shipments/**").permitAll()
-                .requestMatchers("/api/risk/**").permitAll()
+                    .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/shipments/**").authenticated()
+                .requestMatchers("/api/risk/**").authenticated()
                 .anyRequest().authenticated()
             )
             .exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) ->

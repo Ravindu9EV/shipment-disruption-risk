@@ -99,7 +99,7 @@ public class RiskEngineServiceImpl implements RiskEngineService {
 
 
     @Override
-    public ResponseEntity<?> breakdwon(Long id) {
+    public ResponseEntity<?> breakdown(Long id) {
         return shipmentRepository.findById(id).map(
             s-> {
                 List<Rule> activeRules = ruleRepository.findByStatus(RuleStatus.ACTIVE);
