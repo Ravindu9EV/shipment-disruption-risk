@@ -30,14 +30,16 @@ public class ShipmentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Shipment> getShipmentById(@PathVariable Long id){
+    public ResponseEntity<ShipmentResponseDTO> getShipmentById(@PathVariable Long id){
         return service.getShipmentById(id)
+            .map(service::toDto)
             .map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/tracking/{shipmentId}")
-    public ResponseEntity<Shipment> getShipmentByTrackingId(@PathVariable String shipmentId){
-        return service.getShipmentByShipmentId(shipmentId).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ShipmentResponseDTO> getShipmentByTrackingId(@PathVariable String shipmentId){
+        return service.getShipmentByShipmentId(shipmentId)
+            .map(service::toDto).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 }

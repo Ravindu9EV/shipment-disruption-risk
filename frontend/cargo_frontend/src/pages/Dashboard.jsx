@@ -8,12 +8,12 @@ export default function Dashboard() {
   const [loading, setLoading] =useState(true);
 
   useEffect(()=> {
-    axiosClient.get(`/shipments?page=${page}&size=10`).then(response => {
+    axiosClient.get(`/api/shipments?page=${page}&size=10`).then(response => {
       setShipments(response.data.content);
       setShipments(response.data.content);
       setTotalPages(response.data.totalPages);
       setLoading(false);
-     // console.log(response.data);
+      console.log(response.data);
 
     })
     .catch(err=> {

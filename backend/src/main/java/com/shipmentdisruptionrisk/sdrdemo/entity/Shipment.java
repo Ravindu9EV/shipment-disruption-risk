@@ -43,6 +43,12 @@ public class Shipment {
     @Column(nullable = false)
     private Boolean disruptionOccurred;
 
+    @Column(name = "geopolitical_risk")
+    private Double geopoliticalRisk;
+
+    @Column(name = "weather_condition")
+    private String weatherCondition;
+
     @OneToOne(mappedBy = "shipment",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private RiskAssessment riskAssessment;
 
@@ -50,7 +56,7 @@ public class Shipment {
     public Shipment(String shipmentId, LocalDate shipmentDate, String originPort,
                     String destination, String transportMode, String productCategory,
                     double distance, double weight, double fuelPrice,
-                    double carrierReliability, double leadTime, Boolean disruptionOccurred) {
+                    double carrierReliability, double leadTime, Boolean disruptionOccurred,Double geopoliticalRisk, String weatherCondition) {
         this.shipmentId = shipmentId;
         this.shipmentDate = shipmentDate;
         this.originPort = originPort;
@@ -63,5 +69,7 @@ public class Shipment {
         this.carrierReliability = carrierReliability;
         this.leadTime = leadTime;
         this.disruptionOccurred = disruptionOccurred;
+        this.geopoliticalRisk=geopoliticalRisk;
+        this.weatherCondition=weatherCondition;
     }
 }

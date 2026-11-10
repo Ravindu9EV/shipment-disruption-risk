@@ -40,16 +40,15 @@ public class ShipmentServiceImpl implements ShipmentService {
                 .distance(shipment.getDistance())
                 .riskLevel(risk != null ? risk.getRiskLevel().name() : "PENDING")
                 .riskScore(risk!= null ? risk.getRiskScore() : 0.0)
+                .geopoliticalRisk(shipment.getGeopoliticalRisk())
+                .weatherCondition(shipment.getWeatherCondition())
                 .build();
         });
     }
 
 
 
-    @Override
-    public List<Shipment> getAllShipments() {
-        return shipmentRepository.findAll();
-    }
+
 
     @Override
     public Optional<Shipment> getShipmentById(Long id) {
@@ -59,5 +58,42 @@ public class ShipmentServiceImpl implements ShipmentService {
     @Override
     public Optional<Shipment> getShipmentByShipmentId(String shipmentId) {
         return shipmentRepository.findShipmentByShipmentId(shipmentId);
+    }
+
+    @Override
+    public ShipmentResponseDTO toDto(Shipment shipment) {
+        RiskAssessment risk = shipment.getRiskAssessment();
+        String level = (risk != null && risk.getRiskLevel() !=null) ? risk.getRiskLevel().name() : "PENDING";
+
+        return ShipmentResponseDTO.builder()
+//            .id(shipment.getId())
+//            .shipmentId(shipment.getShipmentId())
+//            .originPort(shipment.getOriginPort())
+//            .destination(shipment.getDestination())
+//            .distance(shipment.getDistance())
+//            .riskLevel(level)
+//            .riskScore(risk !=null ? risk.getRiskScore() : 0.0)
+//            .geopoliticalRisk(shipment.getGeopoliticalRisk())
+//            .weatherCondition(shipment.getWeatherCondition())
+//            .build();
+            .id(shipment.getId())
+            .shipmentId(shipment.getShipmentId())
+            .shipmentDate(shipment.getShipmentDate())
+            .originPort(shipment.getOriginPort())
+            .destination(shipment.getDestination())
+            .transportMode(shipment.getTransportMode())
+            .productCategory(shipment.getProductCategory())
+            .distance(shipment.getDistance())
+            .weight(shipment.getWeight())
+            .fuelPrice(shipment.getFuelPrice())
+            .carrierReliability(shipment.getCarrierReliability())
+            .leadTime(shipment.getLeadTime())
+            .disruptionOccurred(shipment.getDisruptionOccurred())
+            .geopoliticalRisk(shipment.getGeopoliticalRisk())
+            .weatherCondition(shipment.getWeatherCondition())
+            .riskLevel(risk != null && risk.getRiskLevel() != null ? risk.getRiskLevel().name() : "PENDING")
+            .riskScore(risk != null ? risk.getRiskScore() : null)
+            .assessedAt(risk != null ? risk.getAssessedAt() : null)
+            .build();
     }
 }

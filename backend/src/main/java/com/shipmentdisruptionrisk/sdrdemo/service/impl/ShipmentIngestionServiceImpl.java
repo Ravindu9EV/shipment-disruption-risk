@@ -55,6 +55,9 @@ public class ShipmentIngestionServiceImpl implements ShipmentIngestionService {
 
                 // 5. Try-Catch for malformed rows
                 try {
+                    String disruptionStr = row.get("Disruption_Occurred");
+                    boolean disruption = "1".equals(disruptionStr) || "true".equalsIgnoreCase(disruptionStr);
+
                     Shipment shipment = Shipment.builder()
                         .shipmentId(row.get("Shipment_ID").trim())
                         .shipmentDate(LocalDate.parse(row.get("Date").trim(), dateFormatter))
@@ -67,7 +70,9 @@ public class ShipmentIngestionServiceImpl implements ShipmentIngestionService {
                         .fuelPrice(Double.parseDouble(row.get("Fuel_Price_Index").trim())) // Changed
                         .carrierReliability(Double.parseDouble(row.get("Carrier_Reliability_Score").trim())) // Changed
                         .leadTime(Double.parseDouble(row.get("Lead_Time_Days").trim())) // Changed
-                        .disruptionOccurred(false)
+                        .disruptionOccurred(disruption)
+                        .geopoliticalRisk(Double.parseDouble(row.get("Geopolitical_Risk_Score").trim()))
+                        .weatherCondition(row.get("Weather_Condition").trim())
                         .build();
 
                     shipmentRepository.save(shipment);

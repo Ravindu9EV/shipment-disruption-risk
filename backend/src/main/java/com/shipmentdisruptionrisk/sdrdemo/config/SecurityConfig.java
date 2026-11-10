@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/login").permitAll()
                 .requestMatchers("/actuator/health").permitAll()
 //                .requestMatchers("/api/shipments/**").permitAll()
-//                .requestMatchers("/api/risk/**").permitAll()
+                .requestMatchers("/api/risk/**").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
